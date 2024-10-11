@@ -1,0 +1,113 @@
+{% extends 'base.html' %}
+
+{% block title %}Student List{% endblock %}
+
+{% block content %}
+<h2>Registered Students:</h2>
+<table>
+    <thead>
+        <tr>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Email</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for student in students %}
+            <tr>
+                <td>{{ student.first_name }}</td>
+                <td>{{ student.last_name }}</td>
+                <td>{{ student.email }}</td>
+                <td>
+                    <!-- Modify Button -->
+                    <form action="{% url 'modify_student' student.id %}" method="get" style="display:inline;">
+                        <button type="submit" class="btn btn-modify">Modify</button>
+                    </form>
+                    <!-- Delete Button -->
+                    <form action="{% url 'delete_student' student.id %}" method="post" style="display:inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-delete">Delete</button>
+                    </form>
+                </td>
+            </tr>
+        {% empty %}
+            <tr>
+                <td colspan="4" style="text-align: center;">No students registered yet.</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<!-- Styling for the page -->
+<style>
+    body {
+        background-color: #2c3e50; /* Dark background */
+        color: #ecf0f1; /* Light text for headings */
+    }
+
+    h2 {
+        color: #ecf0f1; /* Light text for headings */
+        text-align: center;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 20px 0;
+    }
+
+    th, td {
+        padding: 10px;
+        border: 1px solid #7f8c8d;
+        text-align: center; /* Center-align table content */
+    }
+
+    th {
+        background-color: #34495e; /* Darker header background */
+        color: white;
+    }
+
+    tr:nth-child(even) {
+        background-color: #95a5a6; /* Gray for alternate rows */
+    }
+
+    /* Modify button */
+    .btn-modify {
+        background-color: #1abc9c; /* Greenish for modify */
+        color: white;
+        border: none;
+        padding: 8px 12px;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    .btn-modify:hover {
+        background-color: #16a085; /* Darker green on hover */
+    }
+
+    /* Delete button */
+    .btn-delete {
+        background-color: #e74c3c; /* Red for delete */
+        color: white;
+        border: none;
+        padding: 8px 12px;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    .btn-delete:hover {
+        background-color: #c0392b; /* Darker red on hover */
+    }
+
+    /* Responsive table adjustments */
+    @media (max-width: 768px) {
+        th, td {
+            font-size: 14px; /* Smaller text on small screens */
+            padding: 6px;
+        }
+    }
+</style>
+{% endblock %}

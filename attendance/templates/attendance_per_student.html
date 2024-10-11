@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+
+{% block title %}Attendance List by Student{% endblock %}
+
+{% block content %}
+<div style="display: flex; justify-content: center; align-items: center; height: 100vh; background-color: #1c1c1c; border-radius: 24px;">
+    <!-- Left Side - Welcome Message -->
+    <div style="flex: 1; color: white; padding: 40px; border-radius: 12px 0 0 12px; display: flex; flex-direction: column; justify-content: center; text-align: center; height:100%;">
+        <h1 style="font-size: 2.5em; margin-bottom: 10px; font-family: 'Arial', sans-serif;">Attendance List</h1>
+        <p style="font-size: 1.2em;">Search attendance records by student.</p>
+    </div>
+
+    <!-- Right Side - Filter Form and Table -->
+    <div style="flex: 1; padding: 40px; margin-right: 25px; background-color: #2C2C2C; border-radius: 12px; box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2); color: white;">
+        <form method="POST" style="margin-bottom: 20px;">
+            {% csrf_token %}
+            <div style="margin-bottom: 20px;">
+                <label for="student_name" style="color: #ccc;">Search by Student Name:</label>
+                <input type="text" name="student_name" id="student_name" placeholder="Enter student name" style="width: 100%; padding: 10px; border: 1px solid #555; border-radius: 6px; background-color: #3a3a3a; color: #ddd;">
+            </div>
+
+            <div style="margin-bottom: 20px;">
+                <label for="course" style="color: #ccc;">Select Course:</label>
+                <select name="course" id="course" style="width: 100%; padding: 10px; border: 1px solid #555; border-radius: 6px; background-color: #3a3a3a; color: #ddd;">
+                    <option value="">All Courses</option>
+                    {% for course in courses %}
+                    <option value="{{ course.id }}">{{ course.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div style="margin-bottom: 20px;">
+                <label for="date" style="color: #ccc;">Select Date:</label>
+                <input type="date" name="date" id="date" style="width: 100%; padding: 10px; border: 1px solid #555; border-radius: 6px; background-color: #3a3a3a; color: #ddd;">
+            </div>
+
+            <input type="submit" value="Filter" class="button" style="background-color: #FFC107; color: white; padding: 12px 25px; border: none; border-radius: 8px; cursor: pointer; font-size: 18px; font-weight: bold; width: 100%; transition: background-color 0.3s;">
+        </form>
+
+        <table style="width: 100%; border-collapse: collapse;">
+            <thead>
+                <tr>
+                    <th>Student</th>
+                    <th>Course</th>
+                    <th>Lecturer</th>
+                    <th>Status</th>
+                    <th>Date</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for attendance in attendance_records %}
+                <tr>
+                    <td>{{ attendance.student }}</td>
+                    <td>{{ attendance.course }}</td>
+                    <td>{{ attendance.lecturer }}</td>
+                    <td>{{ attendance.get_status_display }}</td>
+                    <td>{{ attendance.date }}</td>
+                    <td>
+                        <a href="{% url 'modify_attendance' attendance.id %}" class="button" style="background-color: #4CAF50; padding: 8px 16px; text-decoration: none; border-radius: 5px;">Modify</a>
+                        <a href="{% url 'delete_attendance' attendance.id %}" class="button delete-button" style="background-color: #f44336; padding: 8px 16px; text-decoration: none; border-radius: 5px;">Delete</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" style="text-align: center; color: #ccc;">No attendance records found.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <a href="{% url 'add_attendance' %}" class="button" style="background-color: #FFC107; color: white; padding: 12px 25px; border: none; border-radius: 8px; cursor: pointer; font-size: 18px; font-weight: bold; width: 100%; margin-top: 20px; display: block; text-align: center;">
+            Add Attendance
+        </a>
+    </div>
+</div>
+
+<style>
+    /* Basic table styling */
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    th, td {
+        border: 1px solid #ccc;
+        padding: 10px;
+        text-align: left;
+    }
+    th {
+        background-color: #f4f4f4;
+        color: #333;
+    }
+
+    /* Button hover effects */
+    .button:hover {
+        background-color: #45a049; /* Darker green for modify button */
+    }
+
+    .delete-button:hover {
+        background-color: #e53935; /* Darker red on hover */
+    }
+</style>
+{% endblock %}

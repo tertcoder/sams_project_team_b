@@ -1,0 +1,115 @@
+{% extends 'base.html' %}
+
+{% block title %}Course List{% endblock %}
+
+{% block content %}
+<h2>List of Courses:</h2>
+<table>
+    <thead>
+        <tr>
+            <th>Course Code</th>
+            <th>Name</th>
+            <th>Hours</th>
+            <th>Lecturer</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for course in courses %}
+            <tr>
+                <td>{{ course.course_code }}</td>
+                <td>{{ course.name }}</td>
+                <td>{{ course.hours }}</td>
+                <td>{{ course.lecturer.first_name }} {{ course.lecturer.last_name }}</td>
+                <td>
+                    <!-- Modify Button -->
+                    <form action="{% url 'modify_course' course.id %}" method="get" style="display:inline;">
+                        <button type="submit" class="btn btn-modify">Modify</button>
+                    </form>
+                    <!-- Delete Button -->
+                    <form action="{% url 'delete_course' course.id %}" method="post" style="display:inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-delete">Delete</button>
+                    </form>
+                </td>
+            </tr>
+        {% empty %}
+            <tr>
+                <td colspan="5" style="text-align: center;">No courses registered yet.</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<!-- Styling for the page -->
+<style>
+    body {
+        background-color: #2c3e50; /* Dark background */
+        color: #ecf0f1; /* Light text */
+    }
+
+    h2 {
+        color: #ecf0f1; /* Light text for headings */
+        text-align: center;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 20px 0;
+    }
+
+    th, td {
+        padding: 10px;
+        border: 1px solid #7f8c8d;
+        text-align: center; /* Center-align table content */
+    }
+
+    th {
+        background-color: #34495e; /* Darker header background */
+        color: white;
+    }
+
+    tr:nth-child(even) {
+        background-color: #95a5a6; /* Gray for alternate rows */
+    }
+
+    /* Modify button */
+    .btn-modify {
+        background-color: #1abc9c; /* Greenish for modify */
+        color: white;
+        border: none;
+        padding: 8px 12px;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    .btn-modify:hover {
+        background-color: #16a085; /* Darker green on hover */
+    }
+
+    /* Delete button */
+    .btn-delete {
+        background-color: #e74c3c; /* Red for delete */
+        color: white;
+        border: none;
+        padding: 8px 12px;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    .btn-delete:hover {
+        background-color: #c0392b; /* Darker red on hover */
+    }
+
+    /* Responsive table adjustments */
+    @media (max-width: 768px) {
+        th, td {
+            font-size: 14px; /* Smaller text on small screens */
+            padding: 6px;
+        }
+    }
+</style>
+{% endblock %}
